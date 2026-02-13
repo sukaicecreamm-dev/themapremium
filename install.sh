@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-set -euo pipefail
-set +H 2>/dev/null || true
-
+set -e
+set -u
 PTERO_DIR="${PTERO_DIR:-/var/www/pterodactyl}"
 WRAPPER="$PTERO_DIR/resources/views/templates/wrapper.blade.php"
 PUB_CUSTOM="$PTERO_DIR/public/custom"
@@ -74,3 +73,4 @@ echo "[7/7] Verify wrapper lines..."
 grep -n "custom/premium\.css\|custom/premium\.js" "$WRAPPER" || true
 
 echo "DONE v=$v"
+
