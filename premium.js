@@ -64,41 +64,72 @@
     document.body.prepend(space);
   }
 
-  // welcome bubble (pointer-events none biar gak ganggu klik)
-  function injectWelcome(){
-    if(document.getElementById("rp-welcome")) return;
+ // ===== RP_WELCOME_FIX_V13 =====
+function getLoggedName() {
+  try {
+    // Pterodactyl biasanya expose object ini ketika sudah login
+    var u = window.PterodactylUser || window.user || null;
+    if (u) {
+      if (u.username) return String(u.username);
+      if (u.name) return String(u.name);
+      if (u.email) return String(u.email).split("@")[0];
+    }
+  } catch (e) {}
 
-    const el = document.createElement("div");
-    el.id = "rp-welcome";
-    el.innerHTML = `
-      <div class="pill">
-        Welcome kak <span class="g" id="rp-name">admin</span> ✨
-      </div>
-    `;
-    document.body.appendChild(el);
-
-    // ambil nama dari UI kalau ada
-    const guess = () => {
-      // beberapa panel nampilin username di sidebar card / header
-      const cand =
-        document.querySelector('[class*="UserDetails"]') ||
-        document.querySelector('a[href*="/account"]') ||
-        document.querySelector('div[class*="Sidebar"]') ||
-        document.querySelector('main');
-      let name = "admin";
-      if(cand){
-        const t = (cand.innerText || "").trim();
-        // cari kata yang masuk akal
-        const m = t.match(/\b(admin|raraa|rara|user|owner|root)\b/i);
-        if(m) name = m[0];
-      }
-      const slot = document.getElementById("rp-name");
-      if(slot) slot.textContent = name;
-    };
-
-    guess();
-    setTimeout(guess, 1800);
+  // Fallback: cari teks user di navbar (kalau ada)
+  var candidates = [
+    '[data-testid="user-menu-button"]',
+    'button[aria-haspopup="menu"]',
+    'header button',
+  ];
+  for (var i = 0; i < candidates.length; i++) {
+    var el = document.querySelector(candidates[i]);
+    if (el && el.textContent) {
+      var t = el.textContent.trim();
+      // cegah ketangkep "Admin"
+      if (t && !/^admin$/i.test(t) && t.length <= 32) return t;
+    }
   }
+  return null;
+}
+
+function showWelcome() {
+  var name = getLoggedName();
+  if (!name) return;
+
+  // bikin toast welcome yang tidak ngeblock klik
+  var toast = document.getElementById("rp-toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "rp-toast";
+    toast.style.cssText =
+      "position:fixed;right:14px;top:14px;z-index:99999;" +
+      "pointer-events:none;" +   // IMPORTANT biar tombol di belakang tetep bisa diklik
+      "padding:10px 12px;border-radius:14px;" +
+      "border:1px solid rgba(255,255,255,.14);" +
+      "background:rgba(0,0,0,.45);backdrop-filter:blur(14px);" +
+      "box-shadow:0 16px 60px rgba(0,0,0,.45);" +
+      "color:#fff;font-weight:800;";
+    document.body.appendChild(toast);
+  }
+
+  toast.innerHTML =
+    'Welcome kak <span style="font-weight:900;background:linear-gradient(90deg,#ff3bd4,#38d6ff,#7c4dff);-webkit-background-clip:text;background-clip:text;color:transparent;">' +
+    name +
+    '</span> <span style="opacity:.8;font-weight:700;">✨</span>';
+
+  toast.style.display = "block";
+  clearTimeout(window.__rpToastT);
+  window.__rpToastT = setTimeout(function () {
+    toast.style.display = "none";
+  }, 5000);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  // tampilkan hanya setelah login (bukan di /auth/login)
+  if (location.pathname.indexOf("/auth/") === 0) return;
+  setTimeout(showWelcome, 800);
+});
 
   // tag buttons Start/Restart/Stop supaya kena class rp-btn
   function tagButtons(){
