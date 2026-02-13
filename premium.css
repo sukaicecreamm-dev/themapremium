@@ -246,3 +246,104 @@ button[type="submit"]:active{ transform: scale(.98); }
   -webkit-backdrop-filter: blur(10px);
   box-shadow: var(--rp-glow);
 }
+
+/* ================= RP_UI_BUTTONS_PREMIUM_FINAL ================= */
+
+/* tombol umum di panel (Upload/New File/Create Directory/Move/Archive/Delete) */
+button,
+a[role="button"],
+button[type="button"],
+button[type="submit"]{
+  border-radius: 18px !important;
+}
+
+/* target tombol yang biasanya biru/abu bawaan ptero (lebih aman) */
+button[class*="Button"],
+button[class*="button"],
+a[class*="Button"],
+a[class*="button"]{
+  border: 0 !important;
+  background: rgba(255,255,255,.10) !important;
+  color: rgba(255,255,255,.92) !important;
+  box-shadow: 0 10px 24px rgba(0,0,0,.22) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  transition: transform .18s ease, filter .18s ease, background .18s ease;
+}
+
+/* tombol utama (primary) jadi gradient anim */
+button[class*="primary"],
+button[class*="Primary"],
+a[class*="primary"],
+a[class*="Primary"]{
+  background: var(--rp-grad) !important;
+  background-size: 320% 100% !important;
+  animation: rpBtnShift 5.4s linear infinite !important;
+  font-weight: 950 !important;
+}
+
+/* tombol danger (Delete/Stop) lebih “pink-red premium” */
+button[class*="danger"],
+button[class*="Danger"],
+a[class*="danger"],
+a[class*="Danger"]{
+  background: linear-gradient(90deg,#ff3b6b,#ff3bd4,#ffcc4a) !important;
+  background-size: 320% 100% !important;
+  animation: rpBtnShift 4.8s linear infinite !important;
+  font-weight: 950 !important;
+}
+
+/* hover/active */
+button[class*="Button"]:hover,
+button[class*="button"]:hover,
+a[class*="Button"]:hover,
+a[class*="button"]:hover{
+  transform: translateY(-1px) scale(1.01);
+  filter: saturate(1.08);
+}
+button[class*="Button"]:active,
+button[class*="button"]:active,
+a[class*="Button"]:active,
+a[class*="button"]:active{
+  transform: scale(.98);
+}
+
+/* ================= RP_EXTRA_SPACE_OBJECTS ================= */
+
+/* shape floating */
+.rp-shape{
+  position:absolute;
+  width: 22px; height: 22px;
+  opacity: .55;
+  filter: drop-shadow(0 12px 18px rgba(0,0,0,.28));
+  animation: rpShapeFloat 12s ease-in-out infinite;
+  transform: translate3d(0,0,0);
+}
+@keyframes rpShapeFloat{
+  0%,100%{ transform: translate3d(0,0,0) rotate(0deg); }
+  50%{ transform: translate3d(0,-26px,0) rotate(18deg); }
+}
+
+/* varian bentuk */
+.rp-shape.circle{
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), rgba(255,255,255,.08));
+}
+.rp-shape.square{
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(56,214,255,.75), rgba(255,59,212,.35));
+}
+.rp-shape.tri{
+  width:0; height:0;
+  border-left: 14px solid transparent;
+  border-right:14px solid transparent;
+  border-bottom: 26px solid rgba(124,77,255,.55);
+  background: transparent;
+  filter: drop-shadow(0 12px 18px rgba(0,0,0,.22));
+}
+
+/* parallax halus */
+#rp-space[data-rp-parallax="1"]{
+  transform: translate3d(0,0,0);
+  will-change: transform;
+}
